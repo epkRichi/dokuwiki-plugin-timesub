@@ -44,11 +44,13 @@ function getMethods(){
 function displayTimesub($timesubday) {
     global $conf;
 
-    return;
-
     // Aktualisiere die paene aus dem zip
     $this->_unZipArchive();
+    // hole die vertretungen für den übergebenen tag und die anzeigeart
+    // @return array
+    $substrows = $this->_timesubGetSubsForDate("08.05.2013","tdyntextlehrer");
 
+    return $html;
 
     $planfilesTested = array();
     foreach ($planfileIDs as $planfile) {
@@ -58,7 +60,7 @@ function displayTimesub($timesubday) {
         }
     }
 
-    $html = $this->_timesubCreateMenu($planfilesTested);
+    //html = $this->_timesubCreateMenu($planfilesTested);
 
     if(!isset($planfilesTested[$timesubday])) {
         msg("Für den angegebenen Tag ist kein Plan hinterlegt.");
@@ -86,11 +88,22 @@ function displayTimesub($timesubday) {
   * @param string $infile filename to read html from
   * @return string
   */
-function _timesubReadHtml ($infile) {
+function _timesubGetSubsForDate ($datumkurz,$dbtable) {
     global $conf;
 
-    $html_output = "Plan";
-    return $html_output;
+    $infile = mediaFN(cleanID($this->getConf('extract_target').":timesub-".$dbtable));
+    $contents = io_readFile($infile,false);
+    $lines = explode("\n",$contents);
+    $rows = array();
+    foreach($lines as $line) {
+        chop($line);
+        $row = unserialize($line);
+        if ($row['Datumkurz'] == "$datumkurz") {
+            $rows[] = $row;
+        }
+    }
+
+    return $rows;
 }
 
 /**
@@ -117,7 +130,7 @@ function _timesubCreateMenu($infiles) {
   * Unzip uploaded archive file
   *
   * The plans have to be uploaded to the server as a zip file. This function
-  * extracts the plan file according to the plugin configuration, so that 
+  * extracts the plan file according to the plugin configuration, so that
   * later on the plans can be displayed.
   *
   * @author Frank Schiebel <frank@linuxmuster.net>
@@ -161,7 +174,14 @@ function _unZipArchive() {
 
     if($result) {
         $files = $zip->get_List($zip_file);
-        $this->_postProcessFiles($directory, $files);
+        if ($files) {
+            $mdbfilename = $this->_postProcessFiles($directory, $files);
+            if (file_exists($mdbfilename)) {
+                $this->_timesubMdb2Csv($mdbfilename);
+            } elseif ($this->getConf('debug')) {
+                msg("Error: $mdbfilename not found!",-1);
+            }
+        }
         return true;
     } else {
         return false;
@@ -189,25 +209,78 @@ function _postProcessFiles($dir, $files) {
         $fn_new = str_replace('/',':',$fn_old); // target filename
         $fn_new = str_replace(':', '/', cleanID($fn_new));
 
-        if(substr($fn_old, -1) == '/') { 
+        if(substr($fn_old, -1) == '/') {
             // given file is a directory
             io_mkdir_p($dir.'/'.$fn_new);
             chmod($dir.'/'.$fn_new, $conf['dmode']);
             array_push($dirs, $dir.'/'.$fn_new);
             array_push($tmp_dirs, $this->tmpdir.'/'.$fn_old);
         } else {
-            // move the file
-            // FIXME check for success ??
+            if (!is_dir(dir)){
+                io_mkdir_p($dir);
+            }
             rename($this->tmpdir.'/'.$fn_old, $dir.'/'.$fn_new);
+            $mdbfilename = $dir.'/'.$fn_new;
             chmod($dir.'/'.$fn_new, $conf['fmode']);
             if ($this->getConf('debug')) {
                 msg("Extracted: $dir/$fn_new", 1);
             }
-
         }
+        return $mdbfilename;
     }
 }
 
+
+/**
+ * Converts the timesub mdb-Database to csv-Files
+ *
+ * @author Frank Schiebel <frank@linuxmuster.net>
+ */
+function _timesubMdb2Csv($mdbfile) {
+    global $conf;
+
+    if (!file_exists($mdbfile)) {
+        msg("Database file $mdbfile nor found", -1);
+        return;
+    }
+    if ($this->getConf('debug')) {
+        msg("Reading future events from $mdbfile");
+    }
+
+    // FIXME to config
+    $tables_to_convert = "TDynTextAula TDynTextLehrer TStatTextAula TStatTextLehrer";
+    $tables_to_convert = explode(" ",$tables_to_convert);
+
+    // get data from tables an serialize it
+    foreach($tables_to_convert as $table) {
+        // this will not work on all webspaces, you need
+        // to have mdbtools installed, but so be it (works for me ;))
+        $csv = popen("/usr/bin/mdb-export -q \\\" -X \\\\ " . escapeshellarg($mdbfile) . " " . escapeshellarg($table), "r");
+        // get headerline a keys to array
+        $header = fgetcsv($csv);
+        // some variables
+        $rows = array();
+        $savestring = "";
+        // now go through the lines an save every substitution that lies
+        // in den future to the seralized data storage, forget the rest...
+        while($row=fgetcsv($csv)) {
+            $row = array_combine($header, $row);
+            $timestamp =  strtotime($row['Datumkurz']);
+            if ($timestamp > time()) {
+                $savestring .= serialize($row) . "\n";
+            }
+        }
+        // wtrite data to file
+        $outfile = mediaFN(cleanID($this->getConf('extract_target').":timesub-".$table));
+        io_saveFile($outfile,$savestring);
+
+    }
 }
+
+
+}
+
+
+
 
 // vim:ts=4:sw=4:et:

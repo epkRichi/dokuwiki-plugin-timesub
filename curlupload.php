@@ -1,4 +1,9 @@
 <?php
+
+// IMPORTANT!
+// This file has to be copied in your
+// dokuwiki document root directory to work!
+
 // dokuwiki init
 if(!defined('DOKU_INC')) define('DOKU_INC', dirname(__FILE__).'/');
 // load and initialize the core system

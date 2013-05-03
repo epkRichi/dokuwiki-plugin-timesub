@@ -32,12 +32,7 @@ class syntax_plugin_timesub extends DokuWiki_Syntax_Plugin {
     public function connectTo($mode) {
         $this->Lexer->addSpecialPattern('\{\{timesub>.+?\}\}',$mode,'plugin_timesub');
         $this->Lexer->addSpecialPattern('\{\{timesubmenu>.+?\}\}',$mode,'plugin_timesub');
-//        $this->Lexer->addEntryPattern('<FIXME>',$mode,'plugin_timesub');
     }
-
-//    public function postConnect() {
-//        $this->Lexer->addExitPattern('</FIXME>','plugin_timesub');
-//    }
 
     public function handle($match, $state, $pos, &$handler){
 
@@ -65,6 +60,7 @@ class syntax_plugin_timesub extends DokuWiki_Syntax_Plugin {
         }
 
         if ($type == "timesub" ) {
+            $renderer->doc .= "TS Anzeige Test";
             $renderer->doc .= $myhf->displayTimesub($timesubday);
         }
 
