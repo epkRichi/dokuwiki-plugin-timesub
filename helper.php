@@ -295,7 +295,6 @@ function _unZipArchive() {
 
     //attempt to open the archive file
     $result = $zip->Extract($zip_file,$this->tmpdir);
-    echo $this->tmpdir;
 
     if($result) {
         $files = $zip->get_List($zip_file);
@@ -341,11 +340,11 @@ function _postProcessFiles($dir, $files) {
             array_push($dirs, $dir.'/'.$fn_new);
             array_push($tmp_dirs, $this->tmpdir.'/'.$fn_old);
         } else {
-            if (!is_dir(dir)){
+            if (!is_dir($dir)) {
                 io_mkdir_p($dir);
             }
             rename($this->tmpdir.'/'.$fn_old, $dir.'/'.$fn_new);
-            if ( $fn_old == $this->getConf('tsinternet_filename')) {
+            if ( strpos($fn_old,$this->getConf('tsinternet_filename')) !== FALSE ) {
                 $mdbfilename = $dir.'/'.$fn_new;
             }
             chmod($dir.'/'.$fn_new, $conf['fmode']);
@@ -353,9 +352,11 @@ function _postProcessFiles($dir, $files) {
                 msg("Extracted: $dir/$fn_new", 1);
             }
         }
-        msg( $mdbfilename);
-        return $mdbfilename;
     }
+    if ($this->getConf('debug')) {
+        msg("Using $mdbfilename as database", 1);
+    }
+    return $mdbfilename;
 }
 
 
