@@ -41,54 +41,146 @@ function getMethods(){
   * @param in $timesubday daynumber to decide wich plan to display 0,1,2,3...
   * @return string
   */
-function displayTimesub($timesubday) {
+function displayTimesub($timesubday,$displaytarget) {
     global $conf;
 
     // Aktualisiere die paene aus dem zip
     $this->_unZipArchive();
     // hole die vertretungen für den übergebenen tag und die anzeigeart
     // @return array
-    $substrows = $this->_timesubGetSubsForDate("08.05.2013","tdyntextlehrer");
-
-    return $html;
-
-    $planfilesTested = array();
-    foreach ($planfileIDs as $planfile) {
-    $planfile = mediaFN($planfile);
-        if(file_exists($planfile) && !is_dir($planfile)) {
-            $planfilesTested[] = $planfile;
-        }
+    if($displaytarget == "lehrer") {
+        $substtable = strtolower($this->getConf('substtable_lehrer'));
+        $headertable = strtolower($this->getConf('headertable_lehrer'));
+    } else {
+        $substtable = strtolower($this->getConf('substtable_aula'));
+        $headertable = strtolower($this->getConf('headertable_aula'));
     }
-
-    //html = $this->_timesubCreateMenu($planfilesTested);
-
-    if(!isset($planfilesTested[$timesubday])) {
-        msg("Für den angegebenen Tag ist kein Plan hinterlegt.");
-        return;
+    // hole alle daten, für die vertretungen vorliegen
+    $dates = $this->_timesubGetDatesAvailable($substtable);
+    // setze als default das nächste vorhandene datum
+    if (!in_array($timesubday, $dates)) {
+        $timesubday = array_keys($dates);
+        $timesubday = $timesubday[0];
     }
+    // baue das menü zusammen
+    $html = $this->_timesubCreateMenu($dates,$timesubday);
 
-    if(!file_exists($planfilesTested[$timesubday])) {
-        msg("Datei existiert nicht:" . $planfilesTested[$timesubday] .". Passen Sie die Konfiguration an");
-        return;
-    }
+    $substrows = $this->_timesubGetLinesForDate($timesubday,$substtable);
+    $headerrows = $this->_timesubGetLinesForDate($timesubday,$headertable);
 
-    $html .= $this->_timesubReadHtml($planfilesTested[$timesubday]);
+    $html .= $this->_timesubCreateHeadertable($headerrows,$displaytarget);
+    $html .= $this->_timesubCreateTable($substrows,$displaytarget);
 
     return $html;
 
 }
 
 /**
-  * Reads timesub html files
-  *
-  * This function reads the output of timesub info-modul html files
-  * and creates a userfriendly table for displaying in dokuwiki
+  * Creates html-table for given task
   *
   * @author Frank Schiebel <frank@linuxmuster.net>
-  * @param string $infile filename to read html from
+  * @param array $substitutions array with substitutions, indexed by mdb fieldnames
+  * @param string $displaytarget "lehrer" or "aula"
   * @return string
   */
-function _timesubGetSubsForDate ($datumkurz,$dbtable) {
+function _timesubCreateTable ($substitutions,$displaytarget) {
+
+    if ($displaytarget == "lehrer" ) {
+        $fields = $this->getConf('dbfields_order_lehrer');
+        $fields = explode(",",$fields);
+        $html  = "<table class=\"timesub\">";
+        $html .= "<tr><th>Lehrer</th>";
+        $html .= "<th>Std.</th>";
+        $html .= "<th>Klasse</th>";
+        $html .= "<th>Fach</th>";
+        $html .= "<th>Raum</th>";
+        $html .= "<th>für</th>";
+        $html .= "<th>Bemerkung</th></tr>";
+    } else {
+        $fields = $this->getConf('dbfields_order_aula');
+        $fields = explode(",",$fields);
+        $html  = "<table class=\"timesub\">";
+        $html .= "<tr><th>Klasse</th>";
+        $html .= "<th>Std.</th>";
+        $html .= "<th>Lehrer/Fach</th>";
+        $html .= "<th>vertr. durch</th>";
+        $html .= "<th>Fach</th>";
+        $html .= "<th>Raum</th>";
+        $html .= "<th>Bemerkung</th></tr>";
+    }
+
+    $last = "";
+
+    foreach($substitutions as $subst) {
+        if ($last != $subst['F1']) {
+            $trclass = $trclass == "class=\"two\"" ? "class=\"one\"" : "class=\"two\"";
+        }
+        $last = $subst['F1'];
+        $html .= "<tr $trclass>";
+        foreach ($fields as $field) {
+            $field = trim($field);
+            $html .= "<td>" . $subst[$field] . "</td>";
+        }
+        $html .= "</tr>";
+
+    }
+    $html .= "</table>";
+    return $html;
+}
+
+function _timesubCreateHeadertable($datarow,$displaytarget) {
+
+    $data = $datarow[0];
+
+    if ($displaytarget == "lehrer" ) {
+        $html  = "<h1>" . $data['Ueberschrift'] . " " . $data['Datumlang'] ."</h1>";
+        $html .= "<div class=\"printtime\">" . $data['Aushangort'] . "/" . $data['Druckdatum'] . "</div>";
+        $html .= "<table class=\"timesub\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
+        $html .= "<tr><td class=\"header\">Abwesende Klassen:</td>";
+        $html .= "<td>" . $data['AbwKlassen']. "</td></tr>";
+        $html .= "<tr><td class=\"header\">Abwesende Kurse:</td>";
+        $html .= "<td>" . $data['AbwKurse']. "</td></tr>";
+        $html .= "<tr><td class=\"header\">Abwesende Lehrer:</td>";
+        $html .= "<td>" . $data['AbwLehrer']. "</td></tr>";
+        $html .= "<tr><td class=\"header\">Blockierte Räume:</td>";
+        $html .= "<td>" . $data['FehlRäume']. "</td></tr>";
+        $html .= "<tr><td class=\"header bittebeachten\">Bitte beachten:</td>";
+        $html .= "<td class=\"bittebeachten\">" . $data['BitteBeachten']. "</td></tr>";
+        $html .= "</table>";
+
+    } else {
+        // eigentlich unnötig, aber für künftige anpassungen unterscheide ich lehrer
+        // und aula bei der ausgabe
+        $html  = "<h1>" . $data['Ueberschrift'] . " " . $data['Datumlang'] ."</h1>";
+        $html .= "<div class=\"printtime\">" . $data['Aushangort'] . "/" . $data['Druckdatum'] . "</div>";
+        $html .= "<table class=\"timesub\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
+        $html .= "<tr><td class=\"header\">Abwesende Klassen:</td>";
+        $html .= "<td>" . $data['AbwKlassen']. "</td></tr>";
+        $html .= "<tr><td class=\"header\">Abwesende Kurse:</td>";
+        $html .= "<td>" . $data['AbwKurse']. "</td></tr>";
+        $html .= "<tr><td class=\"header\">Abwesende Lehrer:</td>";
+        $html .= "<td>" . $data['AbwLehrer']. "</td></tr>";
+        $html .= "<tr><td class=\"header\">Blockierte Räume:</td>";
+        $html .= "<td>" . $data['FehlRäume']. "</td></tr>";
+        $html .= "<tr><td class=\"header bittebeachten\">Bitte beachten:</td>";
+        $html .= "<td class=\"bittebeachten\">" . $data['BitteBeachten']. "</td></tr>";
+        $html .= "</table>";
+    }
+
+    return $html;
+
+}
+
+/**
+  * Reads serialized timesub database files
+  *
+  *
+  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @param string $datumkurz date to get substitutions for
+  * @param string $dbtable database table file to read from
+  * @return array substitutions for given day
+  */
+function _timesubGetLinesForDate ($datumkurz,$dbtable) {
     global $conf;
 
     $infile = mediaFN(cleanID($this->getConf('extract_target').":timesub-".$dbtable));
@@ -103,6 +195,7 @@ function _timesubGetSubsForDate ($datumkurz,$dbtable) {
         }
     }
 
+    asort($rows);
     return $rows;
 }
 
@@ -114,17 +207,48 @@ function _timesubGetSubsForDate ($datumkurz,$dbtable) {
   * click on, linked to the corresponding plan files
   *
   * @author Frank Schiebel <frank@linuxmuster.net>
-  * @param array $infiles array with verified filenames to read
+  * @param array $dates array with verified dates for wich substs are available
   * @return string
-  */
-function _timesubCreateMenu($infiles) {
-    global $conf;
+**/
+function _timesubCreateMenu($dates,$timesubday) {
     global $ID;
 
-    $returnhtml .= "Menu";
-    return $returnhtml;
+
+    $html = "<div class=\"timesubmenu\">";
+    foreach($dates as $key=>$shortdate) {
+        if ( $key == $timesubday ) {
+            $aclass = " class=\"tstoday\"";
+        } else {
+            $aclass = "";
+        }
+        $html .=  "<a " . $aclass . " href=\"".wl($ID,"timesubday=$key")."\">".$key."</a>";
+    }
+    $html .= "</div>";
+
+
+    return $html;
 
 }
+
+function _timesubGetDatesAvailable($dbtable) {
+    global $conf;
+
+    $infile = mediaFN(cleanID($this->getConf('extract_target').":timesub-".$dbtable));
+    $contents = io_readFile($infile,false);
+    $lines = explode("\n",$contents);
+    $rows = array();
+    foreach($lines as $line) {
+        chop($line);
+        $row = unserialize($line);
+        $timestamp =  strtotime($row['Datumkurz']);
+        if ($timestamp > time()) {
+            $dates[$row['Datumkurz']] = $row['Datumkurz'];
+        }
+    }
+    asort($dates);
+    return $dates;
+}
+
 
 /**
   * Unzip uploaded archive file
@@ -171,6 +295,7 @@ function _unZipArchive() {
 
     //attempt to open the archive file
     $result = $zip->Extract($zip_file,$this->tmpdir);
+    echo $this->tmpdir;
 
     if($result) {
         $files = $zip->get_List($zip_file);
@@ -220,12 +345,15 @@ function _postProcessFiles($dir, $files) {
                 io_mkdir_p($dir);
             }
             rename($this->tmpdir.'/'.$fn_old, $dir.'/'.$fn_new);
-            $mdbfilename = $dir.'/'.$fn_new;
+            if ( $fn_old == $this->getConf('tsinternet_filename')) {
+                $mdbfilename = $dir.'/'.$fn_new;
+            }
             chmod($dir.'/'.$fn_new, $conf['fmode']);
             if ($this->getConf('debug')) {
                 msg("Extracted: $dir/$fn_new", 1);
             }
         }
+        msg( $mdbfilename);
         return $mdbfilename;
     }
 }
@@ -247,14 +375,18 @@ function _timesubMdb2Csv($mdbfile) {
         msg("Reading future events from $mdbfile");
     }
 
-    // FIXME to config
-    $tables_to_convert = "TDynTextAula TDynTextLehrer TStatTextAula TStatTextLehrer";
-    $tables_to_convert = explode(" ",$tables_to_convert);
+    // get tables to convert to serialized arrays from  config
+    $tables_to_convert = array();
+    $tables_to_convert[] = $this->getConf('headertable_aula');
+    $tables_to_convert[] = $this->getConf('headertable_lehrer');
+    $tables_to_convert[] = $this->getConf('substtable_aula');
+    $tables_to_convert[] = $this->getConf('substtable_lehrer');
 
     // get data from tables an serialize it
     foreach($tables_to_convert as $table) {
         // this will not work on all webspaces, you need
         // to have mdbtools installed, but so be it (works for me ;))
+        $table = trim($table);
         $csv = popen("/usr/bin/mdb-export -q \\\" -X \\\\ " . escapeshellarg($mdbfile) . " " . escapeshellarg($table), "r");
         // get headerline a keys to array
         $header = fgetcsv($csv);
@@ -267,13 +399,13 @@ function _timesubMdb2Csv($mdbfile) {
             $row = array_combine($header, $row);
             $timestamp =  strtotime($row['Datumkurz']);
             if ($timestamp > time()) {
+                unset($row['BitteRTF']);
                 $savestring .= serialize($row) . "\n";
             }
         }
         // wtrite data to file
         $outfile = mediaFN(cleanID($this->getConf('extract_target').":timesub-".$table));
         io_saveFile($outfile,$savestring);
-
     }
 }
 

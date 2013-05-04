@@ -60,8 +60,7 @@ class syntax_plugin_timesub extends DokuWiki_Syntax_Plugin {
         }
 
         if ($type == "timesub" ) {
-            $renderer->doc .= "TS Anzeige Test";
-            $renderer->doc .= $myhf->displayTimesub($timesubday);
+            $renderer->doc .= $myhf->displayTimesub($timesubday,$optiondata);
         }
 
         return true;
