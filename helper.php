@@ -371,10 +371,6 @@ function _postProcessFiles($dir, $files) {
 function _timesubMdb2Csv($mdbfile) {
     global $conf;
 
-    // FIXME
-    // check if mdbcommand is installed on the system
-    // if not, return
-
     if (!file_exists($mdbfile)) {
         msg("Database file $mdbfile nor found", -1);
         return;
@@ -395,7 +391,6 @@ function _timesubMdb2Csv($mdbfile) {
         // this will not work on all webspaces, you need
         // to have mdbtools installed, but so be it (works for me ;))
         $table = trim($table);
-        // FIXME mdb command to config
         $csv = popen("/usr/bin/mdb-export -q \\\" -X \\\\ " . escapeshellarg($mdbfile) . " " . escapeshellarg($table), "r");
         // get headerline a keys to array
         $header = fgetcsv($csv);
