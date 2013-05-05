@@ -15,7 +15,7 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 class  helper_plugin_timesub extends DokuWiki_Plugin {
 
-function getMethods(){
+function getMethods() {
     $result = array();
     $result[] = array(
       'name'   => 'timesub',
@@ -28,26 +28,22 @@ function getMethods(){
     );
     // and more supported methods...
     return $result;
-  }
+}
 
 /**
   * Wrapper funktion for displaying the plan page
   *
-  * This function checks the given configuration, builds an array of
-  * verified plan files and creates the html output which is returned to
-  * the plugins sysntax component.
-  *
   * @author Frank Schiebel <frank@linuxmuster.net>
-  * @param in $timesubday daynumber to decide wich plan to display 0,1,2,3...
-  * @return string
+  * @param string $timesubday date in format dd.mm.yyyy
+  * @param string $displaytarget one of lehrer/aula
+  * @return string $html html formatted output
   */
 function displayTimesub($timesubday,$displaytarget) {
     global $conf;
 
-    // Aktualisiere die paene aus dem zip
+    // Aktualisiere die plaene aus dem zip
     $this->_unZipArchive();
-    // hole die vertretungen für den übergebenen tag und die anzeigeart
-    // @return array
+    // zuweisung db tabelle(n) -> displaytarget
     if($displaytarget == "lehrer") {
         $substtable = strtolower($this->getConf('substtable_lehrer'));
         $headertable = strtolower($this->getConf('headertable_lehrer'));
@@ -55,19 +51,21 @@ function displayTimesub($timesubday,$displaytarget) {
         $substtable = strtolower($this->getConf('substtable_aula'));
         $headertable = strtolower($this->getConf('headertable_aula'));
     }
-    // hole alle daten, für die vertretungen vorliegen
+    // hole das datum aller tage, für die vertretungen vorliegen
     $dates = $this->_timesubGetDatesAvailable($substtable);
-    // setze als default das nächste vorhandene datum
+    // setze als default das datum des nächsten tages, 
+    // für den es vertretungen gibt
     if (!in_array($timesubday, $dates)) {
         $timesubday = array_keys($dates);
         $timesubday = $timesubday[0];
     }
     // baue das menü zusammen
     $html = $this->_timesubCreateMenu($dates,$timesubday);
-
+    // lese die serialisierten vertretungsplandaten 
+    // für vertretungen und header
     $substrows = $this->_timesubGetLinesForDate($timesubday,$substtable);
     $headerrows = $this->_timesubGetLinesForDate($timesubday,$headertable);
-
+    // bette die ergebnisse in html ein
     $html .= $this->_timesubCreateHeadertable($headerrows,$displaytarget);
     $html .= $this->_timesubCreateTable($substrows,$displaytarget);
 
@@ -76,14 +74,15 @@ function displayTimesub($timesubday,$displaytarget) {
 }
 
 /**
-  * Creates html-table for given task
+  * Creates html-table for given displaytarget
   *
   * @author Frank Schiebel <frank@linuxmuster.net>
-  * @param array $substitutions array with substitutions, indexed by mdb fieldnames
-  * @param string $displaytarget "lehrer" or "aula"
+  *
+  * @param array    $substitutions array with substitutions, indexed by mdb fieldnames
+  * @param string   $displaytarget "lehrer" or "aula"
   * @return string
   */
-function _timesubCreateTable ($substitutions,$displaytarget) {
+aunction _timesubCreateTable ($substitutions,$displaytarget) {
 
     if ($displaytarget == "lehrer" ) {
         $fields = $this->getConf('dbfields_order_lehrer');
@@ -110,7 +109,6 @@ function _timesubCreateTable ($substitutions,$displaytarget) {
     }
 
     $last = "";
-
     foreach($substitutions as $subst) {
         if ($last != $subst['F1']) {
             $trclass = $trclass == "class=\"two\"" ? "class=\"one\"" : "class=\"two\"";
@@ -149,8 +147,8 @@ function _timesubCreateHeadertable($datarow,$displaytarget) {
         $html .= "</table>";
 
     } else {
-        // eigentlich unnötig, aber für künftige anpassungen unterscheide ich lehrer
-        // und aula bei der ausgabe
+        // eigentlich unnötig, aber für künftige anpassungen
+        // unterscheide ich lehrer und aula bei der ausgabe
         $html  = "<h1>" . $data['Ueberschrift'] . " " . $data['Datumlang'] ."</h1>";
         $html .= "<div class=\"printtime\">" . $data['Aushangort'] . "/" . $data['Druckdatum'] . "</div>";
         $html .= "<table class=\"timesub\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
@@ -174,10 +172,10 @@ function _timesubCreateHeadertable($datarow,$displaytarget) {
 /**
   * Reads serialized timesub database files
   *
-  *
   * @author Frank Schiebel <frank@linuxmuster.net>
-  * @param string $datumkurz date to get substitutions for
-  * @param string $dbtable database table file to read from
+  *
+  * @param string $datumkurz date to get substitutions for (format dd.mm.yyyy)
+  * @param string $dbtable database table file to read from (lowercase dokuwiki style)
   * @return array substitutions for given day
   */
 function _timesubGetLinesForDate ($datumkurz,$dbtable) {
@@ -208,11 +206,11 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
   *
   * @author Frank Schiebel <frank@linuxmuster.net>
   * @param array $dates array with verified dates for wich substs are available
+  * @param string $timesubday date in format dd.mm.yyyy
   * @return string
 **/
 function _timesubCreateMenu($dates,$timesubday) {
     global $ID;
-
 
     $html = "<div class=\"timesubmenu\">";
     foreach($dates as $key=>$shortdate) {
@@ -224,7 +222,6 @@ function _timesubCreateMenu($dates,$timesubday) {
         $html .=  "<a " . $aclass . " href=\"".wl($ID,"timesubday=$key")."\">".$key."</a>";
     }
     $html .= "</div>";
-
 
     return $html;
 
@@ -313,11 +310,14 @@ function _unZipArchive() {
 }
 
 /**
- * Checks the mime type and fixes the permission and filenames of the
+ * Fixes the permission and filenames of the
  * extracted files. Taken from Michel Kliers archiveupload plugin.
  *
  * @author Michael Klier <chi@chimeric.de>
  * @author Frank Schiebel <frank@linuxmuster.net>
+ * @param string $dir directory to extract files to
+ * @param array  $files array width filelist from archive
+ * @return string filename of timesubs ts-internet.mdb file
  */
 function _postProcessFiles($dir, $files) {
     global $conf;
@@ -361,12 +361,19 @@ function _postProcessFiles($dir, $files) {
 
 
 /**
- * Converts the timesub mdb-Database to csv-Files
+ * Converts the timesub mdb-Database to serialized arrays,
+ * one file per db table
  *
  * @author Frank Schiebel <frank@linuxmuster.net>
+ *
+ * @param string filename of ts-internet.mdb
  */
 function _timesubMdb2Csv($mdbfile) {
     global $conf;
+
+    // FIXME
+    // check if mdbcommand is installed on the system
+    // if not, return
 
     if (!file_exists($mdbfile)) {
         msg("Database file $mdbfile nor found", -1);
@@ -388,19 +395,23 @@ function _timesubMdb2Csv($mdbfile) {
         // this will not work on all webspaces, you need
         // to have mdbtools installed, but so be it (works for me ;))
         $table = trim($table);
+        // FIXME mdb command to config
         $csv = popen("/usr/bin/mdb-export -q \\\" -X \\\\ " . escapeshellarg($mdbfile) . " " . escapeshellarg($table), "r");
         // get headerline a keys to array
         $header = fgetcsv($csv);
         // some variables
         $rows = array();
         $savestring = "";
-        // now go through the lines an save every substitution that lies
-        // in den future to the seralized data storage, forget the rest...
+        // now go through the lines and save every substitution that lies
+        // in the future to the seralized data storage, forget the rest...
         while($row=fgetcsv($csv)) {
             $row = array_combine($header, $row);
             $timestamp =  strtotime($row['Datumkurz']);
             if ($timestamp > time()) {
+                // throw away "Bitte beachten" in RTF format: this
+                // messes the serialized data completely up...
                 unset($row['BitteRTF']);
+
                 $savestring .= serialize($row) . "\n";
             }
         }
@@ -412,8 +423,6 @@ function _timesubMdb2Csv($mdbfile) {
 
 
 }
-
-
 
 
 // vim:ts=4:sw=4:et:
