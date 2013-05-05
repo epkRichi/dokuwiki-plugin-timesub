@@ -82,7 +82,7 @@ function displayTimesub($timesubday,$displaytarget) {
   * @param string   $displaytarget "lehrer" or "aula"
   * @return string
   */
-aunction _timesubCreateTable ($substitutions,$displaytarget) {
+function _timesubCreateTable ($substitutions,$displaytarget) {
 
     if ($displaytarget == "lehrer" ) {
         $fields = $this->getConf('dbfields_order_lehrer');
@@ -298,7 +298,7 @@ function _unZipArchive() {
         if ($files) {
             $mdbfilename = $this->_postProcessFiles($directory, $files);
             if (file_exists($mdbfilename)) {
-                $this->_timesubMdb2Csv($mdbfilename);
+                $this->_timesubMdb2Serialized($mdbfilename);
             } elseif ($this->getConf('debug')) {
                 msg("Error: $mdbfilename not found!",-1);
             }
@@ -368,11 +368,16 @@ function _postProcessFiles($dir, $files) {
  *
  * @param string filename of ts-internet.mdb
  */
-function _timesubMdb2Csv($mdbfile) {
+function _timesubMdb2Serialized($mdbfile) {
     global $conf;
 
+    if (!file_exists("/usr/bin/mdb-export")) {
+        msg("mdb-export command: /usr/bin/mdb-export not found", -1);
+        return;
+    }
+
     if (!file_exists($mdbfile)) {
-        msg("Database file $mdbfile nor found", -1);
+        msg("Database file $mdbfile not found", -1);
         return;
     }
     if ($this->getConf('debug')) {
