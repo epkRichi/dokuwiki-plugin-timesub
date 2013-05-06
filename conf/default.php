@@ -16,5 +16,6 @@ $conf['tsinternet_filename'] = "TS-Internet.mdb";
 $conf['curl_uploadsecret'] = '';
 $conf['upload_filename'] = 'timesub:incoming:timesub.zip';
 $conf['extract_target'] = 'timesub:plans';
+$conf['saveconftocachedir'] = '1';
 $conf['debug'] = '1';
 

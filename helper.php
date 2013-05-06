@@ -64,6 +64,8 @@ function displayTimesub($timesubday,$displaytarget) {
     // lese die serialisierten vertretungsplandaten 
     // für vertretungen und header
     $substrows = $this->_timesubGetLinesForDate($timesubday,$substtable);
+    // make replacements
+    $substrows = $this->_makeReplacements($substrows);
     $headerrows = $this->_timesubGetLinesForDate($timesubday,$headertable);
     // bette die ergebnisse in html ein
     $html .= $this->_timesubCreateHeadertable($headerrows,$displaytarget);
@@ -227,6 +229,13 @@ function _timesubCreateMenu($dates,$timesubday) {
 
 }
 
+/**
+  * Gets the dates for wich substituions are availables
+  *
+  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @param string $dbtable to decide if we read for "aula" or "lehrer"
+  * @return array $dated sorted array with valid dates
+**/
 function _timesubGetDatesAvailable($dbtable) {
     global $conf;
 
@@ -426,6 +435,71 @@ function _timesubMdb2Serialized($mdbfile) {
         io_saveFile($outfile,$savestring);
     }
 }
+
+/**
+ * Replaces strings in the substtable according to config settings
+ *
+ * @author Frank Schiebel <frank@linuxmuster.net>
+ *
+ * @param array $substitutions array width substitutions, indexed by db-fieldname * @return array $substitutions
+ */
+function _makeReplacements($substitutions) {
+
+    $replacements = confToHash($this->_getsavedir().'/timesub-replacements.conf');
+    foreach($replacements as $replacement) {
+        list($needle, $rtext,$cssclass) = explode("|",$replacement);
+        $needle = trim($needle);
+        $rtext = trim($rtext);
+        $cssclass = trim($cssclass);
+        if (!isset($cssclass)) {
+            $substitutions = $this->_str_replace_deep($needle, $rtext, $substitutions);
+        } else {
+            $substitutions = $this->_str_replace_deep($needle, $this->_htmlTagText("$rtext","span","$cssclass"), $substitutions);
+        }
+    }
+    return $substitutions;
+
+}
+
+/**
+* get savedir
+*/
+function _getsavedir() {
+    global $conf;
+    if ( $this->getConf('saveconftocachedir') ) {
+        return rtrim($conf['savedir'],"/") . "/cache";
+    } else {
+        return dirname(__FILE__);
+    }
+}
+
+/**
+ *
+ */
+
+function _str_replace_deep($search, $replace, $subject)
+{
+    if (is_array($subject))
+    {
+        foreach($subject as &$oneSubject)
+            $oneSubject = $this->_str_replace_deep($search, $replace, $oneSubject);
+        unset($oneSubject);
+        return $subject;
+    } else {
+        return str_replace($search, $replace, $subject);
+    }
+}
+
+/**
+  *
+  */
+
+function _htmlTagText($text,$htmltag,$cssclasses) {
+    $html  = "<".$htmltag . " class=\"".$cssclasses."\">" . $text ."</$htmltag>";
+    return $html;
+
+}
+
 
 }
 
