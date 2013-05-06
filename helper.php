@@ -233,12 +233,13 @@ function _timesubGetDatesAvailable($dbtable) {
     $infile = mediaFN(cleanID($this->getConf('extract_target').":timesub-".$dbtable));
     $contents = io_readFile($infile,false);
     $lines = explode("\n",$contents);
-    $rows = array();
+    $dates = array();
     foreach($lines as $line) {
         chop($line);
         $row = unserialize($line);
         $timestamp =  strtotime($row['Datumkurz']);
-        if ($timestamp > time()) {
+        $todaystamp = strtotime(date('Y-m-d'));
+        if ($timestamp >= $todaystamp) {
             $dates[$row['Datumkurz']] = $row['Datumkurz'];
         }
     }
@@ -407,20 +408,22 @@ function _timesubMdb2Serialized($mdbfile) {
         while($row=fgetcsv($csv)) {
             $row = array_combine($header, $row);
             $timestamp =  strtotime($row['Datumkurz']);
-            if ($timestamp > time()) {
+            $todaystamp = strtotime(date('Y-m-d'));
+            if ($timestamp >= $todaystamp) {
                 // throw away "Bitte beachten" in RTF format: this
                 // messes the serialized data completely up...
                 unset($row['BitteRTF']);
-
                 $savestring .= serialize($row) . "\n";
             }
         }
         // wtrite data to file
         $outfile = mediaFN(cleanID($this->getConf('extract_target').":timesub-".$table));
+        if ($this->getConf('debug')) {
+            msg("Writing serialized data to $outfile");
+        }
         io_saveFile($outfile,$savestring);
     }
 }
-
 
 }
 
