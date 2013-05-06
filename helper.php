@@ -402,6 +402,7 @@ function _timesubMdb2Serialized($mdbfile) {
         $header = fgetcsv($csv);
         // some variables
         $rows = array();
+        $number_of_substs_in_future = 0;
         $savestring = "";
         // now go through the lines and save every substitution that lies
         // in the future to the seralized data storage, forget the rest...
@@ -414,12 +415,13 @@ function _timesubMdb2Serialized($mdbfile) {
                 // messes the serialized data completely up...
                 unset($row['BitteRTF']);
                 $savestring .= serialize($row) . "\n";
+                $number_of_substs_in_future++;
             }
         }
         // wtrite data to file
         $outfile = mediaFN(cleanID($this->getConf('extract_target').":timesub-".$table));
         if ($this->getConf('debug')) {
-            msg("Writing serialized data to $outfile");
+            msg("Writing serialized data to $outfile ($number_of_substs_in_future row(s))");
         }
         io_saveFile($outfile,$savestring);
     }
