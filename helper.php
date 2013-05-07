@@ -133,6 +133,15 @@ function _timesubCreateTable ($substitutions,$displaytarget) {
     return $html;
 }
 
+/**
+  * Creates html-table with header information for given displaytarget
+  *
+  * @author Frank Schiebel <frank@linuxmuster.net>
+  *
+  * @param array    $datarow array with static headerinfos
+  * @param string   $displaytarget "lehrer" or "aula"
+  * @return string  $html HTML code for headertable
+  */
 function _timesubCreateHeadertable($datarow,$displaytarget) {
 
     if (count($datarow) == 0 ) {
