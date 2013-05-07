@@ -86,6 +86,11 @@ function displayTimesub($timesubday,$displaytarget) {
   */
 function _timesubCreateTable ($substitutions,$displaytarget) {
 
+    if (count($substitutions) == 0 ) {
+        $html = "Es liegen keine Vertretungseinträge vor.";
+        return $html;
+    }
+
     if ($displaytarget == "lehrer" ) {
         $fields = $this->getConf('dbfields_order_lehrer');
         $fields = explode(",",$fields);
@@ -129,6 +134,11 @@ function _timesubCreateTable ($substitutions,$displaytarget) {
 }
 
 function _timesubCreateHeadertable($datarow,$displaytarget) {
+
+    if (count($datarow) == 0 ) {
+        $html = "Es liegen keine Informationen zum Vertretungsplan vor.<br />";
+        return $html;
+    }
 
     $data = $datarow[0];
 
@@ -190,7 +200,8 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
     foreach($lines as $line) {
         chop($line);
         $row = unserialize($line);
-        if ($row['Datumkurz'] == "$datumkurz") {
+        if (isset($row['Datumkurz']) && $row['Datumkurz'] == "$datumkurz") {
+            print "Push";
             $rows[] = $row;
         }
     }
