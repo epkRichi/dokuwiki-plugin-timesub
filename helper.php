@@ -201,7 +201,6 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
         chop($line);
         $row = unserialize($line);
         if (isset($row['Datumkurz']) && $row['Datumkurz'] == "$datumkurz") {
-            print "Push";
             $rows[] = $row;
         }
     }
@@ -434,6 +433,7 @@ function _timesubMdb2Serialized($mdbfile) {
                 // throw away "Bitte beachten" in RTF format: this
                 // messes the serialized data completely up...
                 unset($row['BitteRTF']);
+                $row['BitteBeachten'] = str_replace("\n","<br />",$row['BitteBeachten']);
                 $savestring .= serialize($row) . "\n";
                 $number_of_substs_in_future++;
             }
@@ -499,7 +499,7 @@ function _str_replace_deep($search, $replace, $subject)
     } else {
         return str_replace($search, $replace, $subject);
     }
-}
+} 
 
 /**
   *
