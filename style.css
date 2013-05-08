@@ -51,4 +51,10 @@ span.blue {
     background: transparent url("img/blue.gif") left 50% no-repeat;
     padding-left: 12px;
 }
-
+span.aktuell {
+    background: transparent url("img/aktuell.gif") left 50% no-repeat;
+    width: 62px;
+    height: 14px;
+    display: block;
+    float: right;
+}
