@@ -17,8 +17,12 @@ require_once DOKU_PLUGIN.'admin.php';
 
 class admin_plugin_timesub extends DokuWiki_Admin_Plugin {
 
-public function getMenuSort() { return FIXME; }
+public function getMenuSort() { return 150; }
 public function forAdminOnly() { return false; }
+
+function getMenuText($language) {
+    return $this->getLang('name');
+}
 
 public function handle() {
     if($_POST['timesubreplacements']){
