@@ -7,8 +7,13 @@ tr.one {
 }
 
 div.printtime {
-    font-size: 80%;
+    font-size: 90%;
     color: green;
+    float: right;
+}
+
+span.version {
+    font-weight: bold;
 }
 
 td.header {

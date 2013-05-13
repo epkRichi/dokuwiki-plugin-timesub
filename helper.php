@@ -153,7 +153,7 @@ function _timesubCreateHeadertable($datarow,$displaytarget) {
 
     if ($displaytarget == "lehrer" ) {
         $html  = "<h1>" . $data['Ueberschrift'] . " " . $data['Datumlang'] ."</h1>";
-        $html .= "<div class=\"printtime\">" . $data['Aushangort'] . "/" . $data['Druckdatum'] . "</div>";
+        $html .= "<div class=\"printtime\">" . $data['Aushangort'] . " <span class=\"version\">" . $data['Version'] . "</span> " . $data['Druckdatum'] . "</div>";
         $html .= "<table class=\"timesub\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
         $html .= "<tr><td class=\"header\">Abwesende Klassen:</td>";
         $html .= "<td>" . $data['AbwKlassen']. "</td></tr>";
@@ -171,7 +171,7 @@ function _timesubCreateHeadertable($datarow,$displaytarget) {
         // eigentlich unnötig, aber für künftige anpassungen
         // unterscheide ich lehrer und aula bei der ausgabe
         $html  = "<h1>" . $data['Ueberschrift'] . " " . $data['Datumlang'] ."</h1>";
-        $html .= "<div class=\"printtime\">" . $data['Aushangort'] . "/" . $data['Druckdatum'] . "</div>";
+        $html .= "<div class=\"printtime\">" . $data['Aushangort'] . " <span class=\"version\">" . $data['Version'] . "</span> " . $data['Druckdatum'] . "</div>";
         $html .= "<table class=\"timesub\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
         $html .= "<tr><td class=\"header\">Abwesende Klassen:</td>";
         $html .= "<td>" . $data['AbwKlassen']. "</td></tr>";
