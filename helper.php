@@ -315,7 +315,7 @@ function _unZipArchive() {
     if(!$this->tmpdir) return false;
 
     // include ZipLib
-    require_once(DOKU_INC."inc/ZipLib.class.php");
+    require_once(DOKU_PLUGIN."timesub/ZipLib.class.php");
     //create a new ZipLib class
     $zip = new ZipLib;
 
