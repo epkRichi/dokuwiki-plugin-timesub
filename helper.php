@@ -31,6 +31,45 @@ function getMethods() {
 }
 
 /**
+  * Wrapper funktion for getting the plan as JSON
+  *
+  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @param string $timesubday date in format dd.mm.yyyy
+  * @param string $displaytarget one of lehrer/aula
+  * @return string $json json formatted output
+  */
+function displayTimesubJSON($timesubday,$displaytarget) 
+{
+    global $conf;
+
+    // Aktualisiere die plaene aus dem zip
+    $this->_unZipArchive();
+
+     // zuweisung db tabelle(n) -> displaytarget
+     if($displaytarget == "lehrer") {
+        $substtable = strtolower($this->getConf('substtable_lehrer'));
+        $headertable = strtolower($this->getConf('headertable_lehrer'));
+    } else {
+        $substtable = strtolower($this->getConf('substtable_aula'));
+        $headertable = strtolower($this->getConf('headertable_aula'));
+    }
+    // hole das datum aller tage, für die vertretungen vorliegen
+    $dates = $this->_timesubGetDatesAvailable($substtable);
+    // setze als default das datum des nächsten tages, 
+    // für den es vertretungen gibt
+    if (!in_array($timesubday, $dates)) {
+        $timesubday = array_keys($dates);
+        $timesubday = $timesubday[0];
+    }
+    $substrows = $this->_timesubGetLinesForDate($timesubday,$substtable);
+    print("<pre>");
+    print_r($substrows);
+    print("</pre>");
+    $json = json_encode($substrows);
+    //$json = $substrows;
+    return $json;
+}
+/**
   * Wrapper funktion for displaying the plan page
   *
   * @author Frank Schiebel <frank@linuxmuster.net>
@@ -38,7 +77,8 @@ function getMethods() {
   * @param string $displaytarget one of lehrer/aula
   * @return string $html html formatted output
   */
-function displayTimesub($timesubday,$displaytarget) {
+function displayTimesub($timesubday,$displaytarget) 
+{
     global $conf;
 
     // Aktualisiere die plaene aus dem zip
