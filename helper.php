@@ -55,17 +55,37 @@ function displayTimesubJSON($timesubday,$displaytarget)
     }
     // hole das datum aller tage, für die vertretungen vorliegen
     $dates = $this->_timesubGetDatesAvailable($substtable);
-    // setze als default das datum des nächsten tages, 
-    // für den es vertretungen gibt
-    if (!in_array($timesubday, $dates)) {
-        $timesubday = array_keys($dates);
-        $timesubday = $timesubday[0];
+    // Create second date only for testing
+    array_push($dates,"04.11.2019");
+    
+    $planArray = array();
+
+    $mdbsubsttables = array();
+    $mdbsubsttables[] = strtolower($this->getConf('substtable_lehrer'));
+    $mdbsubsttables[] = strtolower($this->getConf('substtable_aula'));  
+
+    $mdbheadertables = array();
+    $mdbheadertables[] = strtolower($this->getConf('headertable_lehrer'));
+    $mdbheadertables[] = strtolower($this->getConf('headertable_aula'));
+
+    $d = 0;
+    foreach ($dates as $date) 
+    {
+        $key = "day" . $d;
+        $planArray[$key]['date'] = $date;
+
+        foreach ($mdbsubsttables as $table) {
+            $substrows = $this->_timesubGetLinesForDate($date,$table);
+            $planArray[$key][$table] = $substrows;
+        }
+        foreach ($mdbheadertables as $table) {
+            $headerrows = $this->_timesubGetLinesForDate($date,$table);
+            $planArray[$key][$table] = $headerrows;
+        }
+        $d++;
     }
-    $substrows = $this->_timesubGetLinesForDate($timesubday,$substtable);
-    print("<pre>");
-    print_r($substrows);
-    print("</pre>");
-    $json = json_encode($substrows);
+   
+    $json = json_encode($planArray);
     //$json = $substrows;
     return $json;
 }

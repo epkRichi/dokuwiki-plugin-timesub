@@ -29,9 +29,9 @@ class action_plugin_timesub extends DokuWiki_Action_Plugin
             if (!$myhf =& plugin_load('helper', 'timesub')) return false;
             $timesubday=0;
             $json = $myhf->displayTimesubJSON($timesubday,"lehrer");
-            print "<pre>";
+            //print "<pre>";
             print($json);
-            print "</pre>";
+            //print "</pre>";
         }
         // stop dokuwiki if a tsaction was given
         if ($tsaction != "" ) 
