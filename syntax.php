@@ -34,7 +34,7 @@ class syntax_plugin_timesub extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addSpecialPattern('\{\{timesubmenu>.+?\}\}',$mode,'plugin_timesub');
     }
 
-    public function handle($match, $state, $pos, &$handler){
+    public function handle($match, $state, $pos, Doku_Handler $handler){
 
         $match = substr($match, 2, -2);
         list($type, $match) = split('>', $match, 2);
@@ -43,7 +43,7 @@ class syntax_plugin_timesub extends DokuWiki_Syntax_Plugin {
 
     }
 
-    public function render($mode, &$renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         if($mode != 'xhtml') return false;
         if (!$myhf =& plugin_load('helper', 'timesub')) return false;
 
