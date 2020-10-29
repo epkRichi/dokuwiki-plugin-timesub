@@ -55,8 +55,6 @@ function displayTimesubJSON($timesubday,$displaytarget)
     }
     // hole das datum aller tage, für die vertretungen vorliegen
     $dates = $this->_timesubGetDatesAvailable($substtable);
-    // Create second date only for testing
-    array_push($dates,"04.11.2019");
     
     $planArray = array();
 
