@@ -182,7 +182,12 @@ function _timesubCreateTable ($substitutions,$displaytarget) {
         $html .= "<tr $trclass>";
         foreach ($fields as $field) {
             $field = trim($field);
-            $html .= "<td>" . $subst[$field] . "</td>";
+            if ( $field == "F3" && $displaytarget == "eltern") {
+                $parts = explode("/",$subst[$field]);
+                $html .= "<td>" . $parts[1] . "</td>";
+            } else {
+                $html .= "<td>" . $subst[$field] . "</td>";
+            }
         }
         $html .= "</tr>";
 
@@ -224,7 +229,13 @@ function _timesubCreateHeadertable($datarow,$displaytarget) {
         $html .= "<tr><td class=\"header bittebeachten\">Bitte beachten:</td>";
         $html .= "<td class=\"bittebeachten\">" . $data['BitteBeachten']. "</td></tr>";
         $html .= "</table>";
-
+    } elseif ($displaytarget == "eltern" ) {
+        $html  = "<h1>" . $data['Ueberschrift'] . " " . $data['Datumlang'] ."</h1>";
+        $html .= "<div class=\"printtime\">" . $data['Aushangort'] . " <span class=\"version\">" . $data['Version'] . "</span> " . $data['Druckdatum'] . "</div>";
+        $html .= "<table class=\"timesub\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
+        $html .= "<tr><td class=\"header bittebeachten\">Bitte beachten:</td>";
+        $html .= "<td class=\"bittebeachten\">" . $data['BitteBeachten']. "</td></tr>";
+        $html .= "</table>";
     } else {
         // eigentlich unnötig, aber für künftige anpassungen
         // unterscheide ich lehrer und aula bei der ausgabe
