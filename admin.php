@@ -3,7 +3,7 @@
  * DokuWiki Plugin timesub (Admin Component)
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
- * @author  Frank Schiebel <frank@linuxmuster.net>
+ * @author  Frank Schiebel <frank@openschulportfolio.de>
  */
 
 // must be run within Dokuwiki

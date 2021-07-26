@@ -2,7 +2,7 @@
 /**
  * Options for the timesub plugin
  *
- * @author Frank Schiebel <frank@linuxmuster.net>
+ * @author Frank Schiebel <frank@openschulportfolio.de>
  */
 
 

@@ -2,7 +2,7 @@
 /**
  * english language file for timesub plugin
  *
- * @author Frank Schiebel <frank@linuxmuster.net>
+ * @author Frank Schiebel <frank@openschulportfolio.de>
  */
 
 // keys need to match the langig setting name

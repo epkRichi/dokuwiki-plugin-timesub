@@ -3,7 +3,7 @@
  * DokuWiki Plugin timesub (Helper Component)
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
- * @author  Frank Schiebel <frank@linuxmuster.net>
+ * @author  Frank Schiebel <frank@openschulportfolio.de>
  */
 
 // must be run within Dokuwiki
@@ -33,7 +33,7 @@ function getMethods() {
 /**
   * Wrapper funktion for getting the plan as JSON
   *
-  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @author Frank Schiebel <frank@openschulportfolio.de>
   * @param string $timesubday date in format dd.mm.yyyy
   * @param string $displaytarget one of lehrer/aula
   * @return string $json json formatted output
@@ -90,7 +90,7 @@ function displayTimesubJSON($timesubday,$displaytarget)
 /**
   * Wrapper funktion for displaying the plan page
   *
-  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @author Frank Schiebel <frank@openschulportfolio.de>
   * @param string $timesubday date in format dd.mm.yyyy
   * @param string $displaytarget one of lehrer/aula
   * @return string $html html formatted output
@@ -136,7 +136,7 @@ function displayTimesub($timesubday,$displaytarget)
 /**
   * Creates html-table for given displaytarget
   *
-  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @author Frank Schiebel <frank@openschulportfolio.de>
   *
   * @param array    $substitutions array with substitutions, indexed by mdb fieldnames
   * @param string   $displaytarget "lehrer" or "aula"
@@ -199,7 +199,7 @@ function _timesubCreateTable ($substitutions,$displaytarget) {
 /**
   * Creates html-table with header information for given displaytarget
   *
-  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @author Frank Schiebel <frank@openschulportfolio.de>
   *
   * @param array    $datarow array with static headerinfos
   * @param string   $displaytarget "lehrer" or "aula"
@@ -262,7 +262,7 @@ function _timesubCreateHeadertable($datarow,$displaytarget) {
 /**
   * Reads serialized timesub database files
   *
-  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @author Frank Schiebel <frank@openschulportfolio.de>
   *
   * @param string $datumkurz date to get substitutions for (format dd.mm.yyyy)
   * @param string $dbtable database table file to read from (lowercase dokuwiki style)
@@ -294,7 +294,7 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
   * real date of the plan and creates a menu with the dates to
   * click on, linked to the corresponding plan files
   *
-  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @author Frank Schiebel <frank@openschulportfolio.de>
   * @param array $dates array with verified dates for wich substs are available
   * @param string $timesubday date in format dd.mm.yyyy
   * @return string
@@ -320,7 +320,7 @@ function _timesubCreateMenu($dates,$timesubday) {
 /**
   * Gets the dates for wich substituions are availables
   *
-  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @author Frank Schiebel <frank@openschulportfolio.de>
   * @param string $dbtable to decide if we read for "aula" or "lehrer"
   * @return array $dated sorted array with valid dates
 **/
@@ -352,7 +352,7 @@ function _timesubGetDatesAvailable($dbtable) {
   * extracts the plan file according to the plugin configuration, so that
   * later on the plans can be displayed.
   *
-  * @author Frank Schiebel <frank@linuxmuster.net>
+  * @author Frank Schiebel <frank@openschulportfolio.de>
   * @return boolean
   */
 function _unZipArchive() {
@@ -412,7 +412,7 @@ function _unZipArchive() {
  * extracted files. Taken from Michel Kliers archiveupload plugin.
  *
  * @author Michael Klier <chi@chimeric.de>
- * @author Frank Schiebel <frank@linuxmuster.net>
+ * @author Frank Schiebel <frank@openschulportfolio.de>
  * @param string $dir directory to extract files to
  * @param array  $files array width filelist from archive
  * @return string filename of timesubs ts-internet.mdb file
@@ -462,7 +462,7 @@ function _postProcessFiles($dir, $files) {
  * Converts the timesub mdb-Database to serialized arrays,
  * one file per db table
  *
- * @author Frank Schiebel <frank@linuxmuster.net>
+ * @author Frank Schiebel <frank@openschulportfolio.de>
  *
  * @param string filename of ts-internet.mdb
  */
@@ -528,7 +528,7 @@ function _timesubMdb2Serialized($mdbfile) {
 /**
  * Replaces strings in the substtable according to config settings
  *
- * @author Frank Schiebel <frank@linuxmuster.net>
+ * @author Frank Schiebel <frank@openschulportfolio.de>
  *
  * @param array $substitutions array width substitutions, indexed by db-fieldname * @return array $substitutions
  */
