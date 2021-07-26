@@ -283,7 +283,7 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
         }
     }
 
-    asort($rows);
+    sort($rows);
     return $rows;
 }
 
