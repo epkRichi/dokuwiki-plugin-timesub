@@ -2,7 +2,7 @@
 /**
  * Default settings for the timesub plugin
  *
- * @author Frank Schiebel <frank@openschulportfolio.de>
+ * @author Frank Schiebel <frank@ua25.de>
  */
 
 //$conf['fixme']    = 'FIXME';
@@ -16,6 +16,8 @@ $conf['tsinternet_filename'] = "TS-Internet.mdb";
 $conf['curl_uploadsecret'] = '';
 $conf['upload_filename'] = 'timesub:incoming:timesub.zip';
 $conf['extract_target'] = 'timesub:plans';
+$conf['make_json_available'] = '0';
+$conf['json_access_keys'] = '';
 $conf['saveconftocachedir'] = '1';
 $conf['debug'] = '1';
 

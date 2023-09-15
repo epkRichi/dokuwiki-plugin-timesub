@@ -2,7 +2,7 @@
 /**
  * English language file for timesub plugin
  *
- * @author Frank Schiebel <frank@openschulportfolio.de>
+ * @author Frank Schiebel <frank@ua25.de>
  */
 
 // menu entry for admin plugins
@@ -10,7 +10,7 @@
 
 // custom language strings for the plugin
 // $lang['fixme'] = 'FIXME';
-$lang['name'] = 'TimeSub: Vertretungspläne von Time/Timesub im Portfolio anzeigen';
-$lang['saved'] = 'Ersetzungen gespeichert.';
+$lang['name'] = 'TimeSub: Show subtitution tables from von Time/Timesub in Dokuwiki';
+$lang['saved'] = 'Replacements saved.';
 
 //Setup VIM: ex: et ts=4 :

@@ -2,7 +2,7 @@
 /**
  * english language file for timesub plugin
  *
- * @author Frank Schiebel <frank@openschulportfolio.de>
+ * @author Frank Schiebel <frank@ua25.de>
  */
 
 // keys need to match the langig setting name
@@ -19,6 +19,9 @@ $lang['dbfields_order_lehrer'] = "Reihenfolge der Datenbankfelder in der Lehrerz
 $lang['dbfields_order_aula'] = "Reihenfolge der Datenbankfelder in der Aula-Tabelle, so dass sie zur Kopfzeile der Anzeigetabelle passt: <em>Klasse, Std., Lehrer/Fach, vertr. durch, Fach, Raum, Bemerkung</em>";
 $lang['tsinternet_filename'] = "Name der Datenbankdatei mit den Vertretungen (Groß/Kleinschreibung beachten!)";
 $lang['saveconftocachedir'] = "Ersetzugsliste im Cache-Verzeichnis speichern?";
+$lang['make_json_available'] = "Soll eine JSON Version des Planes ausgegeben werden?";
+$lang['json_access_keys'] = "Welche Keys sollen einen Zugriff auf die JSON Version erlauben?";
+
 
 
 

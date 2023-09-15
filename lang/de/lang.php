@@ -2,7 +2,7 @@
 /**
  * English language file for timesub plugin
  *
- * @author Frank Schiebel <frank@openschulportfolio.de>
+ * @author Frank Schiebel <frank@ua25.de>
  */
 
 // menu entry for admin plugins

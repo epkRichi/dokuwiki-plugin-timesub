@@ -1,6 +1,6 @@
 base   timesub
 author Frank Schiebel
-email  frank@openschulportfolio.de
+email  frank@ua25.de
 date   2012-10-03
 name   timesub plugin
 desc   A simple plugin for displaying timesub subtitution tables within DokuWiki
