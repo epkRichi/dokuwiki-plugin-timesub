@@ -143,7 +143,7 @@ function displayTimesub($timesubday,$displaytarget)
 /**
   * Creates html-table for given displaytarget
   *
-  * @author Frank Schc38bb762bbe640675caffaff369d899934e20f70iebel <frank@ua25.de>
+  * @author Frank Schiebel <frank@ua25.de>
   *
   * @param array    $substitutions array with substitutions, indexed by mdb fieldnames
   * @param string   $displaytarget "lehrer" or "aula"
