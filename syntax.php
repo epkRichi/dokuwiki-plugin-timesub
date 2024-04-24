@@ -37,8 +37,8 @@ class syntax_plugin_timesub extends DokuWiki_Syntax_Plugin {
     public function handle($match, $state, $pos, Doku_Handler $handler){
 
         $match = substr($match, 2, -2);
-        list($type, $match) = split('>', $match, 2);
-        list($input, $options) = split('#', $match, 2);
+        list($type, $match) = explode('>', $match, 2);
+        list($input, $options) = explode('#', $match, 2);
         return array($type, $input, $options);
 
     }
