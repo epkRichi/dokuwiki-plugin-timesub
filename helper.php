@@ -396,18 +396,17 @@ function _unZipArchive() {
     // failed to create tmp dir stop here
     if(!$this->tmpdir) return false;
 
-    // include ZipLib
-    require_once(DOKU_PLUGIN."timesub/ZipLib.class.php");
-    //create a new ZipLib class
-    $zip = new ZipLib;
 
+    $zip = new ZipArchive;
     //attempt to open the archive file
-    $result = $zip->Extract($zip_file,$this->tmpdir);
+    $zip->open($zip_file);
+    $result = $zip->extractTo($this->tmpdir);
 
     if($result) {
-        $files = $zip->get_List($zip_file);
-        if ($files) {
-            $mdbfilename = $this->_postProcessFiles($directory, $files);
+        $file = $zip->getNameIndex(0);
+        $zip->close();
+        if ($file) {
+            $mdbfilename = $this->_postProcessFiles($directory, $file);
             if (file_exists($mdbfilename)) {
                 $this->_timesubMdb2Serialized($mdbfilename);
             } elseif ($this->getConf('debug')) {
@@ -427,7 +426,7 @@ function _unZipArchive() {
  * @author Michael Klier <chi@chimeric.de>
  * @author Frank Schiebel <frank@ua25.de>
  * @param string $dir directory to extract files to
- * @param array  $files array width filelist from archive
+ * @param string  $files name of the file
  * @return string filename of timesubs ts-internet.mdb file
  */
 function _postProcessFiles($dir, $files) {
@@ -439,31 +438,30 @@ function _postProcessFiles($dir, $files) {
     $dirs     = array();
     $tmp_dirs = array();
 
-    foreach($files as $file) {
-        $fn_old = $file['filename'];            // original filename
-        $fn_new = str_replace('/',':',$fn_old); // target filename
-        $fn_new = str_replace(':', '/', cleanID($fn_new));
+    $fn_old = $files;            // original filename
+    $fn_new = str_replace('/',':',$fn_old); // target filename
+    $fn_new = str_replace(':', '/', cleanID($fn_new));
 
-        if(substr($fn_old, -1) == '/') {
-            // given file is a directory
-            io_mkdir_p($dir.'/'.$fn_new);
-            chmod($dir.'/'.$fn_new, $conf['dmode']);
-            array_push($dirs, $dir.'/'.$fn_new);
-            array_push($tmp_dirs, $this->tmpdir.'/'.$fn_old);
-        } else {
-            if (!is_dir($dir)) {
-                io_mkdir_p($dir);
-            }
-            rename($this->tmpdir.'/'.$fn_old, $dir.'/'.$fn_new);
-            if ( strpos($fn_old,$this->getConf('tsinternet_filename')) !== FALSE ) {
-                $mdbfilename = $dir.'/'.$fn_new;
-            }
-            chmod($dir.'/'.$fn_new, $conf['fmode']);
-            if ($this->getConf('debug')) {
-                msg("Extracted: $dir/$fn_new", 1);
-            }
+    if(substr($fn_old, -1) == '/') {
+        // given file is a directory
+        io_mkdir_p($dir.'/'.$fn_new);
+        chmod($dir.'/'.$fn_new, $conf['dmode']);
+        array_push($dirs, $dir.'/'.$fn_new);
+        array_push($tmp_dirs, $this->tmpdir.'/'.$fn_old);
+    } else {
+        if (!is_dir($dir)) {
+            io_mkdir_p($dir);
+        }
+        rename($this->tmpdir.'/'.$fn_old, $dir.'/'.$fn_new);
+        if ( strpos($fn_old,$this->getConf('tsinternet_filename')) !== FALSE ) {
+            $mdbfilename = $dir.'/'.$fn_new;
+        }
+        chmod($dir.'/'.$fn_new, $conf['fmode']);
+        if ($this->getConf('debug')) {
+            msg("Extracted: $dir/$fn_new", 1);
         }
     }
+
     if ($this->getConf('debug')) {
         msg("Using $mdbfilename as database", 1);
     }
