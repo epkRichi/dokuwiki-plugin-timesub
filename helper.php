@@ -48,7 +48,7 @@ function displayTimesubJSON($timesubday,$displaytarget)
 
     // Man muss alle Tabellen durchsuchen, um alle Daten zu finden...
     $alldates = array();
-
+    // FIXME Rework this section, all dates should be present in tstattext (I think)
     $dbtables = array(); 
     $dbtables[] = strtolower($this->getConf('substtable_lehrer'));
     $dbtables[] = strtolower($this->getConf('headertable_lehrer'));
@@ -283,7 +283,7 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
     $lines = explode("\n",$contents);
     $rows = array();
     foreach($lines as $line) {
-        chop($line);
+        chop($line); // FIXME This doesnt do anything
         $row = unserialize($line);
         if (isset($row['Datumkurz']) && $row['Datumkurz'] == "$datumkurz") {
             $rows[] = $row;
@@ -291,7 +291,7 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
     }
 
 
-    sort($rows);
+    sort($rows); // FIXME How does this sort the array (by which key?)
     return $rows;
 }
 
@@ -344,11 +344,12 @@ function _timesubGetDatesAvailable($dbtable) {
         $row = unserialize($line);
         $timestamp =  strtotime($row['Datumkurz']);
         $todaystamp = strtotime(date('Y-m-d'));
+        $todaystamp = mktime(0,0,0,4,24,2024); # FIXME Remove this line
         if ($timestamp >= $todaystamp) {
             $dates[$row['Datumkurz']] = $row['Datumkurz'];
         }
     }
-    asort($dates);
+    asort($dates); // FIXME 01.05.2024 would be before 30.04.2024 (maybe)
     if ($this->getConf('debug')) {
         foreach($dates as $key=>$shortdate) {
             msg("Dates available for table $dbtable: $key => $shortdate");
@@ -408,7 +409,7 @@ function _unZipArchive() {
         if ($file) {
             $mdbfilename = $this->_postProcessFiles($directory, $file);
             if (file_exists($mdbfilename)) {
-                $this->_timesubMdb2Serialized($mdbfilename);
+                //$this->_timesubMdb2Serialized($mdbfilename);
             } elseif ($this->getConf('debug')) {
                 msg("Error: $mdbfilename not found!",-1);
             }
@@ -518,6 +519,7 @@ function _timesubMdb2Serialized($mdbfile) {
             $row = array_combine($header, $row);
             $timestamp =  strtotime($row['Datumkurz']);
             $todaystamp = strtotime(date('Y-m-d'));
+            $todaystamp = mktime(0,0,0,4,24,2024); # FIXME Remove this line
             if ($timestamp >= $todaystamp) {
                 // throw away "Bitte beachten" in RTF format: this
                 // messes the serialized data completely up...
