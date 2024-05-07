@@ -343,8 +343,11 @@ function _timesubGetDatesAvailable($dbtable) {
         chop($line);
         $row = unserialize($line);
         $timestamp =  strtotime($row['Datumkurz']);
-        $todaystamp = strtotime(date('Y-m-d'));
-        $todaystamp = mktime(0,0,0,4,24,2024); # FIXME Remove this line
+        if ($this->getConf('enable_debug_timestamp')) {
+            $todaystamp = strtotime($this->getConf('debug_timestamp'));
+        } else {
+            $todaystamp = strtotime(date('Y-m-d'));
+        }
         if ($timestamp >= $todaystamp) {
             $dates[$row['Datumkurz']] = $row['Datumkurz'];
         }
@@ -518,8 +521,11 @@ function _timesubMdb2Serialized($mdbfile) {
         while($row=fgetcsv($csv)) {
             $row = array_combine($header, $row);
             $timestamp =  strtotime($row['Datumkurz']);
-            $todaystamp = strtotime(date('Y-m-d'));
-            $todaystamp = mktime(0,0,0,4,24,2024); # FIXME Remove this line
+            if ($this->getConf('enable_debug_timestamp')) {
+                $todaystamp = strtotime($this->getConf('debug_timestamp'));
+            } else {
+                $todaystamp = strtotime(date('Y-m-d'));
+            }
             if ($timestamp >= $todaystamp) {
                 // throw away "Bitte beachten" in RTF format: this
                 // messes the serialized data completely up...
