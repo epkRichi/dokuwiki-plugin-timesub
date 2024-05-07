@@ -22,6 +22,6 @@ $lang['saveconftocachedir'] = "Ersetzugsliste im Cache-Verzeichnis speichern?";
 $lang['make_json_available'] = "Should a json version of the plan made available?";
 $lang['json_access_keys'] = "Welche Keys sollen einen Zugriff auf die JSON Version erlauben?";
 $lang['enable_debug_timestamp'] = "Alternativen Zeitstempel zum debuggen verwenden?";
-$lang['debug_timestamp'] = "Zeitstempel, der statt dem aktuellen Zeitpunkt verwendet werden soll (YYYY-MM-DD)";
+$lang['debug_timestamp'] = "Zeitstempel, der statt dem aktuellen Zeitpunkt verwendet werden soll (YYYY-MM-DD). Der Zeitstempel wird benutzt, damit Vertretungspläne für veragngene Tage nicht angezeigt werden.";
 
 //Setup VIM: ex: et ts=4 :
