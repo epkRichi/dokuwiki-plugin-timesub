@@ -21,5 +21,5 @@ $meta['make_json_available'] = array('onoff');
 $meta['json_access_keys'] = array('');
 $meta['saveconftocachedir'] = array('onoff');
 $meta['debug'] = array('onoff');
-
-
+$meta['enable_debug_timestamp'] = array('onoff');
+$meta['debug_timestamp'] = array('string');

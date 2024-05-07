@@ -20,4 +20,6 @@ $conf['make_json_available'] = '0';
 $conf['json_access_keys'] = '';
 $conf['saveconftocachedir'] = '1';
 $conf['debug'] = '1';
+$conf['enable_debug_timestamp'] = '0';
+$confg['debug_timestamp'] = '';
 

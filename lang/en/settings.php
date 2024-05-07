@@ -20,7 +20,7 @@ $lang['dbfields_order_aula'] = "Reihenfolge der Datenbankfelder in der Aula-Tabe
 $lang['tsinternet_filename'] = "Name der Datenbankdatei mit den Vertretungen (Groß/Kleinschreibung beachten!)";
 $lang['saveconftocachedir'] = "Ersetzugsliste im Cache-Verzeichnis speichern?";
 $lang['make_json_available'] = "Should a json version of the plan made available?";
-
-
+$lang['enable_debug_timestamp'] = "Alternativen Zeitstempel zum debuggen verwenden?";
+$lang['debug_timestamp'] = "Zeitstempel, der statt dem aktuellen Zeitpunkt verwendet werden soll (YYYY-MM-DD)";
 
 //Setup VIM: ex: et ts=4 :

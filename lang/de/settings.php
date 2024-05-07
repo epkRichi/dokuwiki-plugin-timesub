@@ -21,6 +21,8 @@ $lang['tsinternet_filename'] = "Name der Datenbankdatei mit den Vertretungen (Gr
 $lang['saveconftocachedir'] = "Ersetzugsliste im Cache-Verzeichnis speichern?";
 $lang['make_json_available'] = "Soll eine JSON Version des Planes ausgegeben werden?";
 $lang['json_access_keys'] = "Welche Keys sollen einen Zugriff auf die JSON Version erlauben?";
+$lang['enable_debug_timestamp'] = "Alternativen Zeitstempel zum debuggen verwenden?";
+$lang['debug_timestamp'] = "Zeitstempel, der statt dem aktuellen Zeitpunkt verwendet werden soll (YYYY-MM-DD)";
 
 
 
