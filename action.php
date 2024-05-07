@@ -44,7 +44,7 @@ class action_plugin_timesub extends DokuWiki_Action_Plugin
             
             $tokenkey = array_search($tstoken, $allvalidtokens);
             // no valid token? exit!
-            if ( ! $tokenkey ) exit;
+            if ( $tokenkey === false ) exit;
                
             if (!$myhf =& plugin_load('helper', 'timesub')) return false;
             $timesubday=0;
