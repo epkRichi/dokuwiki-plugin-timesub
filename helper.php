@@ -117,7 +117,7 @@ function displayTimesub($timesubday,$displaytarget)
         $headertable = strtolower($this->getConf('headertable_aula'));
     }
     // hole das datum aller tage, für die vertretungen vorliegen
-    $dates = $this->_timesubGetDatesAvailable($substtable);
+    $dates = $this->_timesubGetDatesAvailable($headertable);
     // setze als default das datum des nächsten tages, 
     // für den es vertretungen gibt
     if (!in_array($timesubday, $dates)) {
@@ -412,7 +412,7 @@ function _unZipArchive() {
         if ($file) {
             $mdbfilename = $this->_postProcessFiles($directory, $file);
             if (file_exists($mdbfilename)) {
-                //$this->_timesubMdb2Serialized($mdbfilename); FIXME Uncomment this line again
+                $this->_timesubMdb2Serialized($mdbfilename);
             } elseif ($this->getConf('debug')) {
                 msg("Error: $mdbfilename not found!",-1);
             }
