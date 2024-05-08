@@ -412,7 +412,7 @@ function _unZipArchive() {
         if ($file) {
             $mdbfilename = $this->_postProcessFiles($directory, $file);
             if (file_exists($mdbfilename)) {
-                //$this->_timesubMdb2Serialized($mdbfilename);
+                //$this->_timesubMdb2Serialized($mdbfilename); FIXME Uncomment this line again
             } elseif ($this->getConf('debug')) {
                 msg("Error: $mdbfilename not found!",-1);
             }
