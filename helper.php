@@ -46,19 +46,10 @@ function displayTimesubJSON($timesubday,$displaytarget)
     // Aktualisiere die plaene aus dem zip
     $this->_unZipArchive();
 
-    // Man muss alle Tabellen durchsuchen, um alle Daten zu finden...
-    $alldates = array();
-    // FIXME Rework this section, all dates should be present in tstattext (I think)
-    $dbtables = array(); 
-    $dbtables[] = strtolower($this->getConf('substtable_lehrer'));
-    $dbtables[] = strtolower($this->getConf('headertable_lehrer'));
-    $dbtables[] = strtolower($this->getConf('substtable_aula'));
-    $dbtables[] = strtolower($this->getConf('headertable_aula'));
+    // Alle Daten sollten im Header der Schuelerversion auftauchen...
+    $dbtable = strtolower($this->getConf('headertable_aula'));
+    $dates = $this->_timesubGetDatesAvailable($dbtable);
 
-    foreach($dbtables as $d) {
-        $dates = $this->_timesubGetDatesAvailable($d);
-        $alldates = array_merge($alldates, $dates);
-    }
     // Jetzt haben wir alle Tage mit Vertretungen in der DB.
     // Dieses Plugin muss dringend neu geschrieben werden...
     
@@ -88,10 +79,8 @@ function displayTimesubJSON($timesubday,$displaytarget)
         }
         $d++;
     }
-    //print_r($planArray);
    
     $json = json_encode($planArray);
-    //$json = $substrows;
     return $json;
 }
 /**
@@ -118,12 +107,17 @@ function displayTimesub($timesubday,$displaytarget)
     }
     // hole das datum aller tage, für die vertretungen vorliegen
     $dates = $this->_timesubGetDatesAvailable($headertable);
+    
+    if (count($dates) === 0) {
+        return "Es liegen keine Informationen zum Vertretungsplan vor.";
+    }
+
     // setze als default das datum des nächsten tages, 
     // für den es vertretungen gibt
     if (!in_array($timesubday, $dates)) {
-        $timesubday = array_keys($dates);
-        $timesubday = $timesubday[0];
+        $timesubday = $dates[0];
     }
+
     // baue das menü zusammen
     $html = $this->_timesubCreateMenu($dates,$timesubday);
     // lese die serialisierten vertretungsplandaten 
@@ -303,7 +297,7 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
   * click on, linked to the corresponding plan files
   *
   * @author Frank Schiebel <frank@ua25.de>
-  * @param array $dates array with verified dates for wich substs are available
+  * @param array $dates array with verified dates for wich substs are available (dd.mm.yyyy)
   * @param string $timesubday date in format dd.mm.yyyy
   * @return string
 **/
@@ -311,13 +305,13 @@ function _timesubCreateMenu($dates,$timesubday) {
     global $ID;
 
     $html = "<div class=\"timesubmenu\">";
-    foreach($dates as $key=>$shortdate) {
-        if ( $key == $timesubday ) {
+    foreach($dates as $shortdate) {
+        if ( $shortdate == $timesubday ) {
             $aclass = " class=\"tstoday\"";
         } else {
             $aclass = "";
         }
-        $html .=  "<a " . $aclass . " href=\"".wl($ID,"timesubday=$key")."\">".$key."</a>";
+        $html .=  "<a " . $aclass . " href=\"".wl($ID,"timesubday=$shortdate")."\">".$shortdate."</a>";
     }
     $html .= "</div>";
 
@@ -330,7 +324,7 @@ function _timesubCreateMenu($dates,$timesubday) {
   *
   * @author Frank Schiebel <frank@ua25.de>
   * @param string $dbtable to decide if we read for "aula" or "lehrer"
-  * @return array $dated sorted array with valid dates
+  * @return array sorted array with valid dates in the form of (dd.mm.yyyy)
 **/
 function _timesubGetDatesAvailable($dbtable) {
     global $conf;
@@ -340,7 +334,6 @@ function _timesubGetDatesAvailable($dbtable) {
     $lines = explode("\n",$contents);
     $dates = array();
     foreach($lines as $line) {
-        chop($line);
         $row = unserialize($line);
         $timestamp =  strtotime($row['Datumkurz']);
         if ($this->getConf('enable_debug_timestamp')) {
@@ -349,16 +342,18 @@ function _timesubGetDatesAvailable($dbtable) {
             $todaystamp = strtotime(date('Y-m-d'));
         }
         if ($timestamp >= $todaystamp) {
-            $dates[$row['Datumkurz']] = $row['Datumkurz'];
+            $dates[$timestamp] = $row['Datumkurz'];
         }
     }
-    asort($dates); // FIXME 01.05.2024 would be before 30.04.2024 (maybe)
+    // Daten nach Unix Zeitstempel sortieren
+    asort($dates);
     if ($this->getConf('debug')) {
         foreach($dates as $key=>$shortdate) {
             msg("Dates available for table $dbtable: $key => $shortdate");
         }
     }
-    return $dates;
+    // Keys wegschmeißen (bzw. neu, von 0 an indizieren), damit $dates[0] funktioniert
+    return array_values($dates);
 }
 
 
