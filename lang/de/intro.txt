@@ -7,5 +7,5 @@ Das Format ist
 Nummer  Suchmuster|Ersetzung|CSS-Klasse
 </code>
 
-  * Die Nummern der Ersetzungsregeln dürfen nur einmal vorkommen, andernfalls überschreibt die in der Datei weiter unten festgelegte Regel die zuerst definierte. Di Nummern müssen nicht fortlaufend sein.
+  * Die Nummern der Ersetzungsregeln dürfen nur einmal vorkommen, andernfalls überschreibt die in der Datei weiter unten festgelegte Regel die zuerst definierte. Die Nummern müssen nicht fortlaufend sein.
   * Die CSS-Klasse ist optional und kann auch weggelassen werden. Wenn eine Klasse angegeben wird, wird der Text in ein //span//-Element mit der angegebenen Klasse eingebettet. Vordefinierte Klassen sind ''green'', ''orange'', ''red'' und ''blue''. Bei diesen wird ein kleines Quadrat in der enstprechenden Farbe vor dem ersetzten Text platziert.

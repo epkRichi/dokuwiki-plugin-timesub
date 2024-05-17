@@ -1,11 +1,11 @@
-====== Konfiguration von Ersetzungen in der Stundenplananzeige  ======
+====== Configuration of replacements in the substitution plan  ======
 
-Hier können Sie Ersetzungen definieren, die in der Studenplananzeige automatisch vor der Ausgabe des Vertretungsplans vorgenommen werden, um z.B. sehr lange Lehrernamen abzukürzen oder bestimmte Ereigniskategorien mit einer der vordefinierten CSS-Klassen hervorzuheben.
+Here you can define replacements, which will be applied to the displayed substitution plan, i.e. for shortening very long teacher names or for highlighting certain event categories with a pre-defined css class.
 
-Das Format ist
+The format is
 <code>
-Nummer  Suchmuster|Ersetzung|CSS-Klasse
+Number searchstring|replacement|css-class
 </code>
 
-  * Die Nummern der Ersetzungsregeln dürfen nur einmal vorkommen, andernfalls überschreibt die in der Datei weiter unten festgelegte Regel die zuerst definierte. Di Nummern müssen nicht fortlaufend sein.
-  * Die CSS-Klasse ist optional und kann auch weggelassen werden. Wenn eine Klasse angegeben wird, wird der Text in ein //span//-Element mit der angegebenen Klasse eingebettet. Vordefinierte Klassen sind ''green'', ''orange'', ''red'' und ''blue''. Bei diesen wird ein kleines Quadrat in der enstprechenden Farbe vor dem ersetzten Text platziert.
+  * The numbers must be unique, otherwise the last entry will be used. The numbers do not need to be consecutive.
+  * The css class is optional and can be left empty. If a class is specified, the text will be wrapped in a //span//-element with the specified class applied to it. Pre-defined classes are ''green'', ''orange'', ''red'' and ''blue'', which will display a small colored square in front of the text.
