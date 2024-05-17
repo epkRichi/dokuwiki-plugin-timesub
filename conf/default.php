@@ -5,7 +5,6 @@
  * @author Frank Schiebel <frank@ua25.de>
  */
 
-//$conf['fixme']    = 'FIXME';
 $conf['headertable_aula']    = 'TStatTextAula';
 $conf['headertable_lehrer']    = 'TStatTextLehrer';
 $conf['substtable_aula']    = 'TDynTextAula';
@@ -22,4 +21,3 @@ $conf['saveconftocachedir'] = '1';
 $conf['debug'] = '1';
 $conf['enable_debug_timestamp'] = '0';
 $confg['debug_timestamp'] = '';
-

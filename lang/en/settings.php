@@ -5,23 +5,21 @@
  * @author Frank Schiebel <frank@ua25.de>
  */
 
-// keys need to match the langig setting name
-// $lang['fixme'] = 'FIXME';
-$lang['headertable_aula'] = "Name der Datenbanktabelle, welche die statischen Infos im Kopf des Plans für die Anzeige in der Aula enthält.";
-$lang['headertable_lehrer'] = "Name der Datenbanktabelle, welche die statischen Infos im Kopf des Plans für die Anzeige im Lehrerzimmer enthält.";
-$lang['substtable_lehrer'] = "Name der Datenbanktabelle, welche die Informationen zu den Vertretungen für die Anzeige im Lehrerzimmer enthält.";
-$lang['substtable_aula'] = "Name der Datenbanktabelle, welche die Informationen zu den Vertretungen für die Anzeige in der Aula enthält.";
-$lang['curl_uploadsecret'] = 'Passwort, das zum Hochladen der Vertretungspläne per CURL nötig ist.<br />curl -k -F secret="geheim" -F filedata=@plans.zip https://SERVER/portfolio/curlupload.php';
-$lang['upload_filename'] = 'Der Dateiname mit vollständigen DokuWiki Pfad, als der der Plan hochgeladen werden soll.';
-$lang['extract_target'] = 'DokuWiki Namespace, in den das hochgeladene Archiv ausgepackt werden soll.';
-$lang['debug'] = 'Ausgaben zur Fehlersuche an/ausschalten';
-$lang['dbfields_order_lehrer'] = "Reihenfolge der Datenbankfelder in der Lehrerzimer-Tabelle, so dass sie zur Kopfzeile der Anzeigetabelle passt: <em>Lehrer, Std., Klasse, Fach, Raum, für, Bemerkung</em>";
-$lang['dbfields_order_aula'] = "Reihenfolge der Datenbankfelder in der Aula-Tabelle, so dass sie zur Kopfzeile der Anzeigetabelle passt: <em>Klasse, Std., Lehrer/Fach, vertr. durch, Fach, Raum, Bemerkung</em>";
-$lang['tsinternet_filename'] = "Name der Datenbankdatei mit den Vertretungen (Groß/Kleinschreibung beachten!)";
-$lang['saveconftocachedir'] = "Ersetzugsliste im Cache-Verzeichnis speichern?";
+$lang['headertable_aula'] = "Name of the database table which contains the static information of the header of the student version of the plan.";
+$lang['headertable_lehrer'] = "Name of the database table which contains the static information of the header of the teacher version of the plan.";
+$lang['substtable_aula'] = "Name of the database table which contains the substitutions for the student version of the plan.";
+$lang['substtable_lehrer'] = "Name of the database table which contains the substitutions for the teacher version of the plan.";
+$lang['curl_uploadsecret'] = 'Password that\'s needed for uploading the substitution plan via CURL.<br />curl -k -F secret="superstrongpassword" -F filedata=@plans.zip https://SERVER/portfolio/curlupload.php';
+$lang['upload_filename'] = 'The complete DokuWiki path, including the filename, to where the uploaded plan should be saved.';
+$lang['extract_target'] = 'DokuWiki namespace to which the uploaded archive should be extracted.';
+$lang['debug'] = 'Enable debug messages.';
+$lang['dbfields_order_lehrer'] = "Order of the database fields in the teacher table so that it matches the table header: <em>Lehrer, Std., Klasse, Fach, Raum, für, Bemerkung</em>";
+$lang['dbfields_order_aula'] = "Order of the database fields in the student table so that it matches the table header: <em>Klasse, Std., Lehrer/Fach, vertr. durch, Fach, Raum, Bemerkung</em>";
+$lang['tsinternet_filename'] = "Name of the uploaded database file (case sensitive!)";
+$lang['saveconftocachedir'] = "Store replacement list in the cache directory?";
 $lang['make_json_available'] = "Should a json version of the plan made available?";
-$lang['json_access_keys'] = "Welche Keys sollen einen Zugriff auf die JSON Version erlauben?";
-$lang['enable_debug_timestamp'] = "Alternativen Zeitstempel zum debuggen verwenden?";
-$lang['debug_timestamp'] = "Zeitstempel, der statt dem aktuellen Zeitpunkt verwendet werden soll (YYYY-MM-DD). Der Zeitstempel wird benutzt, damit Vertretungspläne für veragngene Tage nicht angezeigt werden.";
+$lang['json_access_keys'] = "Access keys for the json version of the plan:";
+$lang['enable_debug_timestamp'] = "Use an alternative timestamp for debugging purposes?";
+$lang['debug_timestamp'] = "Timestamp to be used instead of the current timestamp (YYYY-MM-DD). The timestamp is used to prevent displaying substitution plans for old days.";
 
 //Setup VIM: ex: et ts=4 :

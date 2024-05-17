@@ -5,11 +5,6 @@
  * @author Frank Schiebel <frank@ua25.de>
  */
 
-// menu entry for admin plugins
-// $lang['menu'] = 'Your menu entry';
-
-// custom language strings for the plugin
-// $lang['fixme'] = 'FIXME';
 $lang['name'] = 'TimeSub: Vertretungspläne von Time/Timesub im Portfolio anzeigen';
 $lang['saved'] = 'Ersetzungen gespeichert.';
 

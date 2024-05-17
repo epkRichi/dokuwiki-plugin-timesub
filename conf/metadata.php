@@ -5,8 +5,6 @@
  * @author Frank Schiebel <frank@ua25.de>
  */
 
-
-//$meta['fixme'] = array('string');
 $meta['headertable_aula']    =array('string');
 $meta['headertable_lehrer']    = array('string');
 $meta['substtable_aula']    = array('string');
