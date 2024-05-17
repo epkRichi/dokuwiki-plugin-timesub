@@ -5,6 +5,11 @@ A simple plugin for displaying timesub substitutions in DokuWiki
 All documentation for this plugin can be found at
 https://github.com/ironiemix
 
+For this plugin to work, you need to move the `curlupload.php` file to the root directory of your dokuwiki installation.
+You also need to have the `php-zip` extension installed.
+
+If you want to use the json export feature, you also need to have `mdbtools` installed.
+
 If you install this plugin manually, make sure it is installed in
 lib/plugins/timesub/ - if the folder is called different it
 will not work!
