@@ -277,15 +277,12 @@ function _timesubGetLinesForDate ($datumkurz,$dbtable) {
     $lines = explode("\n",$contents);
     $rows = array();
     foreach($lines as $line) {
-        chop($line); // FIXME This doesnt do anything
         $row = unserialize($line);
         if (isset($row['Datumkurz']) && $row['Datumkurz'] == "$datumkurz") {
             $rows[] = $row;
         }
     }
 
-
-    sort($rows); // FIXME How does this sort the array (by which key?)
     return $rows;
 }
 
